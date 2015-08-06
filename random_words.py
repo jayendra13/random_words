@@ -12,7 +12,12 @@ for w in words:
 	r1 = requests.get('http://dictionary.reference.com/browse/%s?s=t'%(w))
 	soup1 = BeautifulSoup(r1.text, 'html.parser')
 	results1 = soup1.findAll('div', attrs={'class': 'def-content'})
-	
+	p1 = soup1.findAll('span', attrs={'class': 'pron ipapron'})
+	if len(p1) == 0:
+		p1 = ''
+	else:
+		p1 = p1[0].getText().strip()
+		
 	r2 = requests.get('http://www.gujaratilexicon.com/dictionary/english-to-gujarati/%s*/'%(w))
 	soup2 = BeautifulSoup(r2.text, 'html.parser')
 	results2 = soup2.findAll('div', attrs={'class': 'meaning'})
@@ -23,7 +28,7 @@ for w in words:
 		p2 = p2[0].getText().strip()
 
 	print '**********************************'
-	print w + ' (' + p2 +')'
+	print w + ' (' + p1 + p2 +')'
 	
 	for r in results1:
 		print '\t' + r.getText().strip()
