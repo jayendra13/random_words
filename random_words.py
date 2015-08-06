@@ -32,6 +32,8 @@ for w in words:
 	
 	for r in results1:
 		print '\t' + r.getText().strip()
-		
+	
 	for r in results2:
 		print '\t' + r.getText().strip()
+		
+	print '\n'
