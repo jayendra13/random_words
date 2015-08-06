@@ -8,6 +8,9 @@ v1 = df[0].as_matrix()
 
 words = v1[np.random.randint(0, high=len(v1), size=(10,))]
 
+show_english = True
+show_gujrati = True
+
 for w in words:
 	r1 = requests.get('http://dictionary.reference.com/browse/%s?s=t'%(w))
 	soup1 = BeautifulSoup(r1.text, 'html.parser')
@@ -29,11 +32,13 @@ for w in words:
 
 	print '**********************************'
 	print w + ' (' + p1 + ' ' + p2 +')'
+
+	if show_english:
+		for r in results1:
+			print '\t' + r.getText().strip()
 	
-	for r in results1:
-		print '\t' + r.getText().strip()
-	
-	for r in results2:
-		print '\t' + r.getText().strip()
+	if show_gujrati:
+		for r in results2:
+			print '\t' + r.getText().strip()
 		
 	print '\n'
