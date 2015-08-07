@@ -55,6 +55,7 @@ if __name__ == '__main__':
 		
 		if show_sentences:
 			l = 10000
+			fs = ''
 			for r in results3:
 				s = r.getText().strip()
 				if len(s)<=l:
