@@ -8,11 +8,13 @@ import requests
 if __name__ == '__main__':
 
 	
+	df = pd.read_csv('lst', header=None)
+	v1 = df[0].as_matrix()
+	lst = v1.tolist()
+	
 	if len(sys.argv)>0:
 		words = sys.argv[1:]
 	else:
-		df = pd.read_csv('lst', header=None)
-		v1 = df[0].as_matrix()
 		words = v1[np.random.randint(0, high=len(v1), size=(10,))]
 
 	show_english = True
@@ -20,6 +22,10 @@ if __name__ == '__main__':
 	show_sentences = True
 
 	for w in words:
+	
+		if w not in lst:
+			print w + ' is not in our database'
+		
 		r1 = requests.get('http://dictionary.reference.com/browse/%s?s=t'%(w))
 		soup1 = BeautifulSoup(r1.text, 'html.parser')
 		results1 = soup1.findAll('div', attrs={'class': 'def-content'})
