@@ -3,23 +3,14 @@ import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
 import requests
+from nltk.corpus import wordnet as wn
 
+show_english = True
+show_gujrati = True
+show_sentences = True
+lst = []
 
-if __name__ == '__main__':
-
-	
-	df = pd.read_csv('lst', header=None)
-	v1 = df[0].as_matrix()
-	lst = v1.tolist()
-	
-	if len(sys.argv)>0:
-		words = sys.argv[1:]
-	else:
-		words = v1[np.random.randint(0, high=len(v1), size=(10,))]
-
-	show_english = True
-	show_gujrati = True
-	show_sentences = True
+def scrape(words):
 
 	for w in words:
 	
@@ -68,3 +59,57 @@ if __name__ == '__main__':
 					fs = s
 			print '\t## ' + fs
 		print '\n'
+
+def use_wordnet(words):
+
+	for w in words:
+	
+		if w not in lst:
+			print w + ' is not in our database'
+		
+		r2 = requests.get('http://www.gujaratilexicon.com/dictionary/english-to-gujarati/%s*/'%(w))
+		soup2 = BeautifulSoup(r2.text, 'html.parser')
+		results2 = soup2.findAll('div', attrs={'class': 'meaning'})
+		p2 = soup2.findAll('div', attrs={'class': 'sw-3'})
+		if len(p2) == 0:
+			p2 = ''
+		else:
+			p2 = p2[0].getText().strip()
+
+		print '**********************************'
+		#print w + ' (' + p1 + ' ' + p2 +')'
+		print w
+
+		if show_gujrati:
+			for r in results2:
+				print '\t' + r.getText().strip()
+		print '\n'
+	
+		if show_english:
+			syns = wn.synsets(w)
+			for s in syns:
+				print '\t' + ', '.join(s.lemma_names())
+			print '\t' + s.definition()
+		print '\n'
+		
+
+if __name__ == '__main__':
+
+	
+	df = pd.read_csv('lst', header=None)
+	v1 = df[0].as_matrix()
+	lst = v1.tolist()
+	
+	print sys.argv
+	if len(sys.argv)>1:
+		words = sys.argv[1:]
+	else:
+		words = v1[np.random.randint(0, high=len(v1), size=(10,))]
+		print words
+
+	show_english = True
+	show_gujrati = True
+	show_sentences = True
+
+	
+	use_wordnet(words)
